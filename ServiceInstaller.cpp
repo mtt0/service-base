@@ -45,6 +45,7 @@ void InstallService(PCWSTR pszServiceName,
                     PCWSTR pszDescription,
                     PCWSTR pszParams,
                     DWORD dwStartType,
+                    BOOL bAutoStartAfterInstall,
                     PCWSTR pszDependencies,
                     PCWSTR pszAccount,
                     PCWSTR pszPassword,
@@ -223,6 +224,35 @@ void InstallService(PCWSTR pszServiceName,
             }
 
             RegCloseKey(hResult);
+        }
+
+        if (bAutoStartAfterInstall) {
+            // Try to start the service
+            if (StartService(schService, 0, nullptr))
+            {
+                wprintf(L"Starting %s.", pszServiceName);
+                Sleep(1000);
+
+                SERVICE_STATUS ssSvcStatus = {};
+                while (QueryServiceStatus(schService, &ssSvcStatus))
+                {
+                    if (ssSvcStatus.dwCurrentState == SERVICE_START_PENDING)
+                    {
+                        wprintf(L".");
+                        Sleep(1000);
+                    }
+                    else break;
+                }
+
+                if (ssSvcStatus.dwCurrentState == SERVICE_RUNNING)
+                {
+                    wprintf(L"\n%s is started.\n", pszServiceName);
+                }
+                else
+                {
+                    wprintf(L"\n%s failed to start.\n", pszServiceName);
+                }
+            }
         }
 
         wprintf(L"%s is installed.\n", pszServiceName);

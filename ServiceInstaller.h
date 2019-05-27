@@ -32,6 +32,8 @@
 //   * dwStartType - the service start option. This parameter can be one of
 //     the following values: SERVICE_AUTO_START, SERVICE_BOOT_START,
 //     SERVICE_DEMAND_START, SERVICE_DISABLED, SERVICE_SYSTEM_START.
+//   * bAutoStartAfterInstall - set this to TRUE if the service is intended to
+//     run right after install installation
 //   * pszDependencies - a pointer to a double null-terminated array of null-
 //     separated names of services or load ordering groups that the system
 //     must start before this service.
@@ -53,6 +55,7 @@ void InstallService(PCWSTR pszServiceName,
                     PCWSTR pszDescription,
                     PCWSTR pszParams,
                     DWORD dwStartType,
+                    BOOL bAutoStartAfterInstall,
                     PCWSTR pszDependencies,
                     PCWSTR pszAccount,
                     PCWSTR pszPassword,
