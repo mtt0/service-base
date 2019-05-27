@@ -23,7 +23,7 @@
     <ProjectGuid>{984A63E4-310D-4FF0-AD6A-1E05C8973F5A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>sampleservice</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -182,8 +182,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="event_ids.h" />
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="resource1.h" />
     <ClInclude Include="SampleService.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -215,7 +213,7 @@
     <ResourceCompile Include="event_ids.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="MSG00001.bin" />
+    <None Include="MSG00409.bin" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
