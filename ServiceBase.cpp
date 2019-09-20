@@ -549,7 +549,7 @@ void CServiceBase::WriteLogEntry(PCWSTR pszMessage, WORD wType, DWORD dwEventId,
     PWSTR pszSource;             // Copy of pszMessage for splitting
     PCWSTR* pszStrings;          // Message strings to shown on the "Details" tab in Event Viewer
     WCHAR* pContext;             // Tokenization context
-    WCHAR delimiter = L'\n';     // Strings are delimited by new lines
+    PCWSTR delimiter = L"\n";     // Strings are delimited by new lines
     WORD nStrings = 1;           // Number of strings in the message
 
     // Prepare event strings by splitting the message at new lines
@@ -563,7 +563,7 @@ void CServiceBase::WriteLogEntry(PCWSTR pszMessage, WORD wType, DWORD dwEventId,
     }
 
     // First find the number of strings
-    for (PCWSTR pOccur = wcschr(pszMessage, delimiter); pOccur != nullptr; pOccur = wcschr(++pOccur, delimiter))
+    for (PCWSTR pOccur = wcschr(pszMessage, delimiter[0]); pOccur != nullptr; pOccur = wcschr(++pOccur, delimiter[0]))
     {
         nStrings++;
     }
@@ -582,7 +582,7 @@ void CServiceBase::WriteLogEntry(PCWSTR pszMessage, WORD wType, DWORD dwEventId,
     // Token index
     WORD i = 0;
 
-    for (LPCWSTR token = wcstok_s(pszSource, &delimiter, &pContext); token != nullptr; token = wcstok_s(nullptr, &delimiter, &pContext))
+    for (LPCWSTR token = wcstok_s(pszSource, delimiter, &pContext); token != nullptr; token = wcstok_s(nullptr, delimiter, &pContext))
     {
         pszStrings[i++] = token;
     }
