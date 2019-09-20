@@ -1,4 +1,4 @@
-/****************************** Module Header ******************************\
+﻿/****************************** Module Header ******************************\
 * Module Name:  ServiceBase.cpp
 * Project:      service-base
 * Copyright (c) Microsoft Corporation.
@@ -28,7 +28,7 @@
 #pragma region Static Members
 
 // Initialize the singleton service instance.
-CServiceBase *CServiceBase::s_service = NULL;
+CServiceBase *CServiceBase::s_service = nullptr;
 
 
 //
@@ -54,7 +54,7 @@ BOOL CServiceBase::Run(CServiceBase &service)
     SERVICE_TABLE_ENTRY serviceTable[] =
     {
         { const_cast<LPWSTR>(service.m_name), ServiceMain },
-        { NULL, NULL }
+        { nullptr, nullptr }
     };
 
     // Connects the main thread of a service process to the service control
@@ -77,12 +77,12 @@ BOOL CServiceBase::Run(CServiceBase &service)
 //
 void WINAPI CServiceBase::ServiceMain(DWORD dwArgc, PWSTR *pszArgv)
 {
-    assert(s_service != NULL);
+    assert(s_service != nullptr);
 
     // Register the handler function for the service
     s_service->m_statusHandle = RegisterServiceCtrlHandler(
                                     s_service->m_name, ServiceCtrlHandler);
-    if (s_service->m_statusHandle == NULL)
+    if (s_service->m_statusHandle == nullptr)
     {
         throw GetLastError();
     }
@@ -167,10 +167,10 @@ CServiceBase::CServiceBase(PCWSTR pszServiceName,
                            DWORD dwErrorEventId,
                            WORD wErrorCategoryId)
 {
-    // Service name must be a valid string and cannot be NULL.
-    m_name = (pszServiceName == NULL) ? const_cast<PWSTR>(L"") : pszServiceName;
+    // Service name must be a valid string and cannot be nullptr.
+    m_name = (pszServiceName == nullptr) ? const_cast<PWSTR>(L"") : pszServiceName;
 
-    m_statusHandle = NULL;
+    m_statusHandle = nullptr;
 
     // The service runs in its own process.
     m_status.dwServiceType = SERVICE_WIN32_OWN_PROCESS;
@@ -545,7 +545,7 @@ void CServiceBase::SetServiceStatus(DWORD dwCurrentState,
 
 void CServiceBase::WriteLogEntry(PCWSTR pszMessage, WORD wType, DWORD dwEventId, WORD wCategory)
 {
-    HANDLE hEventSource = NULL;
+    HANDLE hEventSource = nullptr;
     PWSTR pszSource;             // Copy of pszMessage for splitting
     PCWSTR* pszStrings;          // Message strings to shown on the "Details" tab in Event Viewer
     WCHAR* pContext;             // Tokenization context
@@ -557,13 +557,13 @@ void CServiceBase::WriteLogEntry(PCWSTR pszMessage, WORD wType, DWORD dwEventId,
     // Copy the input string as tokenizing modifies the source
     pszSource = _wcsdup(pszMessage);
 
-    if (pszSource == NULL)
+    if (pszSource == nullptr)
     {
         return;
     }
 
     // First find the number of strings
-    for (PCWSTR pOccur = wcschr(pszMessage, delimiter); pOccur != NULL; pOccur = wcschr(++pOccur, delimiter))
+    for (PCWSTR pOccur = wcschr(pszMessage, delimiter); pOccur != nullptr; pOccur = wcschr(++pOccur, delimiter))
     {
         nStrings++;
     }
@@ -582,12 +582,12 @@ void CServiceBase::WriteLogEntry(PCWSTR pszMessage, WORD wType, DWORD dwEventId,
     // Token index
     WORD i = 0;
 
-    for (LPCWSTR token = wcstok_s(pszSource, &delimiter, &pContext); token != NULL; token = wcstok_s(NULL, &delimiter, &pContext))
+    for (LPCWSTR token = wcstok_s(pszSource, &delimiter, &pContext); token != nullptr; token = wcstok_s(nullptr, &delimiter, &pContext))
     {
         pszStrings[i++] = token;
     }
 
-    hEventSource = RegisterEventSource(NULL, m_name);
+    hEventSource = RegisterEventSource(nullptr, m_name);
 
     if (hEventSource)
     {
@@ -595,11 +595,11 @@ void CServiceBase::WriteLogEntry(PCWSTR pszMessage, WORD wType, DWORD dwEventId,
                     wType,                 // Event type
                     wCategory,             // Event category
                     dwEventId,             // Event identifier
-                    NULL,                  // No security identifier
+                    nullptr,                  // No security identifier
                     nStrings,              // Size of lpszStrings array
                     0,                     // No binary data
                     pszStrings,            // Array of strings
-                    NULL                   // No binary data
+                    nullptr                   // No binary data
                    );
 
         DeregisterEventSource(hEventSource);

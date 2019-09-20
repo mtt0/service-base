@@ -44,7 +44,7 @@
 //   * dwNumMessageCategories - number of message categories that will be logged.
 //   * pszMessageResourceFilePath - the full path to a file containing message
 //     string resources to be displayed for event ids and message categories.
-//     if NULL and bRegisterWithEventLog is TRUE, it expected that
+//     if nullptr and bRegisterWithEventLog is TRUE, it expected that
 //     the main service executable contains the message string resources.
 //
 //   NOTE: If the function fails to install the service, it prints the error
@@ -61,7 +61,7 @@ void InstallService(PCWSTR pszServiceName,
                     PCWSTR pszPassword,
                     BOOL bRegisterWithEventLog = TRUE,
                     DWORD dwNumMessageCategories = 0,
-                    PCWSTR pszMessageResourceFilePath = NULL
+                    PCWSTR pszMessageResourceFilePath = nullptr
                    );
 
 //

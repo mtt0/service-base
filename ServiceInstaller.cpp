@@ -1,4 +1,4 @@
-/****************************** Module Header ******************************\
+﻿/****************************** Module Header ******************************\
 * Module Name:  ServiceInstaller.cpp
 * Project:      service-base
 * Copyright (c) Microsoft Corporation.
@@ -56,10 +56,10 @@ void InstallService(PCWSTR pszServiceName,
 {
     wchar_t wszPath[MAX_PATH];
     wchar_t wszFullCommand[2 * MAX_PATH];
-    SC_HANDLE schSCManager = NULL;
-    SC_HANDLE schService = NULL;
+    SC_HANDLE schSCManager = nullptr;
+    SC_HANDLE schService = nullptr;
 
-    if (GetModuleFileName(NULL, wszPath, _countof(wszPath)) == 0)
+    if (GetModuleFileName(nullptr, wszPath, _countof(wszPath)) == 0)
     {
         wprintf(L"GetModuleFileName failed w/err 0x%08lx\n", GetLastError());
         goto Cleanup;
@@ -71,9 +71,9 @@ void InstallService(PCWSTR pszServiceName,
     }
 
     // Open the local default service control manager database
-    schSCManager = OpenSCManager(NULL, NULL, SC_MANAGER_CONNECT |
+    schSCManager = OpenSCManager(nullptr, nullptr, SC_MANAGER_CONNECT |
                                  SC_MANAGER_CREATE_SERVICE);
-    if (schSCManager == NULL)
+    if (schSCManager == nullptr)
     {
         wprintf(L"OpenSCManager failed w/err 0x%08lx\n", GetLastError());
         goto Cleanup;
@@ -89,13 +89,13 @@ void InstallService(PCWSTR pszServiceName,
                      dwStartType,                    // Service start type
                      SERVICE_ERROR_NORMAL,           // Error control type
                      wszFullCommand,                 // Service's command
-                     NULL,                           // No load ordering group
-                     NULL,                           // No tag identifier
+                     nullptr,                           // No load ordering group
+                     nullptr,                           // No tag identifier
                      pszDependencies,                // Dependencies
                      pszAccount,                     // Service running account
                      pszPassword                     // Password of the account
                  );
-    if (schService == NULL)
+    if (schService == nullptr)
     {
         wprintf(L"CreateService failed with error code: 0x%08lx\n", GetLastError());
         goto Cleanup;
@@ -126,7 +126,7 @@ void InstallService(PCWSTR pszServiceName,
             DWORD dwDisposition;
             LSTATUS status;
             DWORD dwFlags = 7;   // error | warning | information
-            PCWSTR pszResourcePath = pszMessageResourceFilePath == NULL ? wszPath : pszMessageResourceFilePath;
+            PCWSTR pszResourcePath = pszMessageResourceFilePath == nullptr ? wszPath : pszMessageResourceFilePath;
 
             if (-1 == _snwprintf_s(wszKey, _countof(wszKey), _TRUNCATE, L"SYSTEM\\CurrentControlSet\\Services\\EventLog\\Application\\%s", pszServiceName))
             {
@@ -140,7 +140,7 @@ void InstallService(PCWSTR pszServiceName,
                                     const_cast<WCHAR*>(L""),                  // No class
                                     REG_OPTION_NON_VOLATILE,                  // Persistent key
                                     KEY_ALL_ACCESS,                           // Can do what we need with it
-                                    NULL,                                     // No security attributes
+                                    nullptr,                                     // No security attributes
                                     &hResult,                                 // Handle to the created/opened key
                                     &dwDisposition);                          // Created new or opened existing?
 
@@ -262,12 +262,12 @@ void InstallService(PCWSTR pszServiceName,
         if (schSCManager)
         {
             CloseServiceHandle(schSCManager);
-            schSCManager = NULL;
+            schSCManager = nullptr;
         }
         if (schService)
         {
             CloseServiceHandle(schService);
-            schService = NULL;
+            schService = nullptr;
         }
     }
 }
@@ -286,13 +286,13 @@ void InstallService(PCWSTR pszServiceName,
 //
 void UninstallService(PCWSTR pszServiceName)
 {
-    SC_HANDLE schSCManager = NULL;
-    SC_HANDLE schService = NULL;
+    SC_HANDLE schSCManager = nullptr;
+    SC_HANDLE schService = nullptr;
     SERVICE_STATUS ssSvcStatus = {};
 
     // Open the local default service control manager database
-    schSCManager = OpenSCManager(NULL, NULL, SC_MANAGER_CONNECT);
-    if (schSCManager == NULL)
+    schSCManager = OpenSCManager(nullptr, nullptr, SC_MANAGER_CONNECT);
+    if (schSCManager == nullptr)
     {
         wprintf(L"OpenSCManager failed w/err 0x%08lx\n", GetLastError());
         goto Cleanup;
@@ -301,7 +301,7 @@ void UninstallService(PCWSTR pszServiceName)
     // Open the service with delete, stop, and query status permissions
     schService = OpenService(schSCManager, pszServiceName, SERVICE_STOP |
                              SERVICE_QUERY_STATUS | DELETE);
-    if (schService == NULL)
+    if (schService == nullptr)
     {
         wprintf(L"OpenService failed w/err 0x%08lx\n", GetLastError());
         goto Cleanup;
@@ -366,11 +366,11 @@ Cleanup:
     if (schSCManager)
     {
         CloseServiceHandle(schSCManager);
-        schSCManager = NULL;
+        schSCManager = nullptr;
     }
     if (schService)
     {
         CloseServiceHandle(schService);
-        schService = NULL;
+        schService = nullptr;
     }
 }
