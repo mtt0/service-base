@@ -18,10 +18,9 @@
 \***************************************************************************/
 
 #pragma region Includes
+#include "ServiceBase.h"
 #include <assert.h>
 #include <strsafe.h>
-
-#include "ServiceBase.h"
 #pragma endregion
 
 
@@ -51,7 +50,7 @@ BOOL CServiceBase::Run(CServiceBase &service)
 {
     s_service = &service;
 
-    SERVICE_TABLE_ENTRY serviceTable[] =
+    SERVICE_TABLE_ENTRYW serviceTable[] =
     {
         { const_cast<LPWSTR>(service.m_name), ServiceMain },
         { nullptr, nullptr }
@@ -61,7 +60,7 @@ BOOL CServiceBase::Run(CServiceBase &service)
     // manager, which causes the thread to be the service control dispatcher
     // thread for the calling process. This call returns when the service has
     // stopped. The process should simply terminate when the call returns.
-    return StartServiceCtrlDispatcher(serviceTable);
+    return StartServiceCtrlDispatcherW(serviceTable);
 }
 
 
@@ -80,7 +79,7 @@ void WINAPI CServiceBase::ServiceMain(DWORD dwArgc, PWSTR *pszArgv)
     assert(s_service != nullptr);
 
     // Register the handler function for the service
-    s_service->m_statusHandle = RegisterServiceCtrlHandler(
+    s_service->m_statusHandle = RegisterServiceCtrlHandlerW(
                                     s_service->m_name, ServiceCtrlHandler);
     if (s_service->m_statusHandle == nullptr)
     {
@@ -587,11 +586,11 @@ void CServiceBase::WriteLogEntry(PCWSTR pszMessage, WORD wType, DWORD dwEventId,
         pszStrings[i++] = token;
     }
 
-    hEventSource = RegisterEventSource(nullptr, m_name);
+    hEventSource = RegisterEventSourceW(nullptr, m_name);
 
     if (hEventSource)
     {
-        ReportEvent(hEventSource,          // Event log handle
+        ReportEventW(hEventSource,          // Event log handle
                     wType,                 // Event type
                     wCategory,             // Event category
                     dwEventId,             // Event identifier
@@ -623,7 +622,7 @@ void CServiceBase::WriteLogEntry(PCWSTR pszMessage, WORD wType, DWORD dwEventId,
 void CServiceBase::WriteErrorLogEntry(PCWSTR pszFunction, DWORD dwError)
 {
     wchar_t szMessage[260];
-    StringCchPrintf(szMessage, ARRAYSIZE(szMessage),
+    StringCchPrintfW(szMessage, ARRAYSIZE(szMessage),
                     L"%s failed with error code 0x%08lx", pszFunction, dwError);
     WriteLogEntry(szMessage, EVENTLOG_ERROR_TYPE, m_dwErrorEventId, m_wErrorCategoryId);
 }
