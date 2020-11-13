@@ -374,3 +374,68 @@ Cleanup:
         schService = nullptr;
     }
 }
+
+//
+//   FUNCTION: StartServiceByName
+//
+//   PURPOSE: Start the service from the local service control
+//   manager database.
+//
+//   PARAMETERS:
+//   * pszServiceName - the name of the service to be removed.
+//
+//   NOTE: If the function fails to start the service, it prints the
+//   error in the standard output stream for users to diagnose the problem.
+//
+void StartServiceByName(PCWSTR pszServiceName) {
+    SC_HANDLE schSCManager = nullptr;
+    SC_HANDLE schService = nullptr;
+    SERVICE_STATUS ssSvcStatus = {};
+
+    // Open the local default service control manager database
+    schSCManager = OpenSCManager(nullptr, nullptr, SC_MANAGER_CONNECT);
+    if (schSCManager == nullptr) {
+        wprintf(L"OpenSCManager failed w/err 0x%08lx\n", GetLastError());
+        goto Cleanup;
+    }
+
+    // Open the service with delete, stop, and query status permissions
+    schService = OpenService(schSCManager, pszServiceName,
+                             SERVICE_START | SERVICE_QUERY_STATUS | READ_CONTROL);
+    if (schService == nullptr) {
+        wprintf(L"OpenService failed w/err 0x%08lx\n", GetLastError());
+        goto Cleanup;
+    }
+
+    // Try to start the service
+    if (StartService(schService, 0, nullptr)) {
+        wprintf(L"Starting %s.", pszServiceName);
+        Sleep(1000);
+
+        SERVICE_STATUS ssSvcStatus = {};
+        while (QueryServiceStatus(schService, &ssSvcStatus)) {
+            if (ssSvcStatus.dwCurrentState == SERVICE_START_PENDING) {
+                wprintf(L".");
+                Sleep(1000);
+            } else
+                break;
+        }
+
+        if (ssSvcStatus.dwCurrentState == SERVICE_RUNNING) {
+            wprintf(L"\n%s is started.\n", pszServiceName);
+        } else {
+            wprintf(L"\n%s failed to start.\n", pszServiceName);
+        }
+    }
+
+Cleanup:
+    // Centralized cleanup for all allocated resources.
+    if (schSCManager) {
+        CloseServiceHandle(schSCManager);
+        schSCManager = nullptr;
+    }
+    if (schService) {
+        CloseServiceHandle(schService);
+        schService = nullptr;
+    }
+}

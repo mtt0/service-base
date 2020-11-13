@@ -1,4 +1,4 @@
-/****************************** Module Header ******************************\
+﻿/****************************** Module Header ******************************\
 * Module Name:  ServiceInstaller.h
 * Project:      service-base
 * Copyright (c) Microsoft Corporation.
@@ -77,3 +77,17 @@ void InstallService(PCWSTR pszServiceName,
 //   error in the standard output stream for users to diagnose the problem.
 //
 void UninstallService(PCWSTR pszServiceName);
+
+//
+//   FUNCTION: StartServiceByName
+//
+//   PURPOSE: Start the service from the local service control
+//   manager database.
+//
+//   PARAMETERS:
+//   * pszServiceName - the name of the service to be removed.
+//
+//   NOTE: If the function fails to start the service, it prints the
+//   error in the standard output stream for users to diagnose the problem.
+//
+void StartServiceByName(PCWSTR pszServiceName);
